@@ -1,0 +1,51 @@
+# Cowebsite Robots.txt
+# 允许所有搜索引擎和 AI 爬虫抓取
+
+User-agent: *
+Allow: /
+
+# 允许豆包 AI 爬虫
+User-agent: Bytespider
+Allow: /
+
+# 允许 DeepSeek AI 爬虫
+User-agent: DeepSeekBot
+Allow: /
+
+# 允许百度爬虫
+User-agent: Baiduspider
+Allow: /
+
+# 允许搜狗爬虫
+User-agent: Sogou
+Allow: /
+
+# 允许 360 爬虫
+User-agent: 360Spider
+Allow: /
+
+# 允许 Google 爬虫
+User-agent: Googlebot
+Allow: /
+
+# 允许 Bing 爬虫
+User-agent: Bingbot
+Allow: /
+
+# 允许 ChatGPT 爬虫
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+# 允许 Claude 爬虫
+User-agent: ClaudeBot
+Allow: /
+
+# 禁止抓取管理后台等敏感目录
+Disallow: /admin/
+Disallow: /private/
+
+# 站点地图
+Sitemap: https://www.cowebsite.com/sitemap.xml
