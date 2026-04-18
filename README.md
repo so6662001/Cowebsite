@@ -30,11 +30,35 @@
 | [`docs/09-钢管行业数字化白皮书样例.md`](docs/09-钢管行业数字化白皮书样例.md) | 60-80 页行业白皮书完整结构 + 4 个标杆案例 |
 | [`docs/10-里程碑实际时间与团队搭建.md`](docs/10-里程碑实际时间与团队搭建.md) | **12-15 个月时间盘** + 团队结构 + 负责人画像 + 老板自己怎么排时间 |
 
-## 重新生成报价模型
+### v3.0 增量包（6 份，回应"价格落地难+团队搭建+5 份扩展"）
+| 文件 | 说明 |
+|---|---|
+| [`docs/11-四个落地问题集中回答.md`](docs/11-四个落地问题集中回答.md) | 试用版无ERP/MES怎么跑、无CMO怎么办、谁招合伙人、地推有没必要 |
+| [`docs/12-三份姐妹行业白皮书结构.md`](docs/12-三份姐妹行业白皮书结构.md) | 镀锌冷卷 / 开平纵剪 / 一体厂 三份姐妹白皮书差异化结构 |
+| [`docs/13-CMO面试题库与试用期KPI.md`](docs/13-CMO面试题库与试用期KPI.md) | CMO 招聘画像 + 5 道核心题 + 6 个月试用期 KPI 模板 |
+| [`tools/generate_quote_pdf.py`](tools/generate_quote_pdf.py) | 客户用 PDF 报价单生成器（中文 ReportLab） |
+| [`tools/sample_quote.pdf`](tools/sample_quote.pdf) | PDF 报价单样例（邯郸 XX 焊管厂） |
+| [`tools/health_assessment.html`](tools/health_assessment.html) | 30 题在线健康度自评单页（手机/桌面响应式，可分享、可打印 PDF） |
+| [`tools/build_financial_model.py`](tools/build_financial_model.py) | 首年财务预测模型生成脚本 |
+| [`tools/钢铁数字化系统_首年财务预测模型.xlsx`](tools/钢铁数字化系统_首年财务预测模型.xlsx) | **首年财务模型 8 sheet**：假设/漏斗/收入/成本/现金流/损益/情景对比 |
+
+## 重新生成工具
 
 ```bash
-pip install openpyxl
-python3 tools/build_quote_model.py
-```
+pip install openpyxl reportlab
 
-输出：`tools/钢铁数字化系统报价单_模型.xlsx`
+# 报价 Excel
+python3 tools/build_quote_model.py
+# 输出: tools/钢铁数字化系统报价单_模型.xlsx
+
+# 客户 PDF 报价单
+python3 tools/generate_quote_pdf.py
+# 输出: tools/sample_quote.pdf
+
+# 首年财务预测模型
+python3 tools/build_financial_model.py
+# 输出: tools/钢铁数字化系统_首年财务预测模型.xlsx
+
+# 在线健康度自评（直接用浏览器打开即可）
+# tools/health_assessment.html
+```
