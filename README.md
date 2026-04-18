@@ -30,7 +30,7 @@
 | [`docs/09-钢管行业数字化白皮书样例.md`](docs/09-钢管行业数字化白皮书样例.md) | 60-80 页行业白皮书完整结构 + 4 个标杆案例 |
 | [`docs/10-里程碑实际时间与团队搭建.md`](docs/10-里程碑实际时间与团队搭建.md) | **12-15 个月时间盘** + 团队结构 + 负责人画像 + 老板自己怎么排时间 |
 
-### v3.0 增量包（6 份，回应"价格落地难+团队搭建+5 份扩展"）
+### v3.0 增量包（回应"价格落地难+团队搭建+5 份扩展"）
 | 文件 | 说明 |
 |---|---|
 | [`docs/11-四个落地问题集中回答.md`](docs/11-四个落地问题集中回答.md) | 试用版无ERP/MES怎么跑、无CMO怎么办、谁招合伙人、地推有没必要 |
@@ -41,6 +41,13 @@
 | [`tools/health_assessment.html`](tools/health_assessment.html) | 30 题在线健康度自评单页（手机/桌面响应式，可分享、可打印 PDF） |
 | [`tools/build_financial_model.py`](tools/build_financial_model.py) | 首年财务预测模型生成脚本 |
 | [`tools/钢铁数字化系统_首年财务预测模型.xlsx`](tools/钢铁数字化系统_首年财务预测模型.xlsx) | **首年财务模型 8 sheet**：假设/漏斗/收入/成本/现金流/损益/情景对比 |
+
+### v4.0 增量包（**战略时机复盘**：行业窗口紧迫，节奏必须压缩）
+| 文件 | 说明 |
+|---|---|
+| [`docs/14-时间窗口复盘与压缩节奏方案.md`](docs/14-时间窗口复盘与压缩节奏方案.md) | **回答"窗口期紧 / 还做不做"**：32 个月真实窗口 / 21 个月压缩节奏 / Plan A B C 三档 / 6 月生死线 |
+| [`tools/build_financial_model_planA.py`](tools/build_financial_model_planA.py) | Plan A 压缩版财务模型生成器 |
+| [`tools/钢铁数字化系统_首年财务预测模型_PlanA.xlsx`](tools/钢铁数字化系统_首年财务预测模型_PlanA.xlsx) | **Plan A 压缩版财务模型**（与基准版对比验证） |
 
 ## 重新生成工具
 
@@ -55,9 +62,13 @@ python3 tools/build_quote_model.py
 python3 tools/generate_quote_pdf.py
 # 输出: tools/sample_quote.pdf
 
-# 首年财务预测模型
+# 首年财务预测模型（基准版）
 python3 tools/build_financial_model.py
 # 输出: tools/钢铁数字化系统_首年财务预测模型.xlsx
+
+# 首年财务预测模型（Plan A 压缩版，21 个月节奏）
+python3 tools/build_financial_model_planA.py
+# 输出: tools/钢铁数字化系统_首年财务预测模型_PlanA.xlsx
 
 # 在线健康度自评（直接用浏览器打开即可）
 # tools/health_assessment.html
