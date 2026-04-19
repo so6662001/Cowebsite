@@ -49,6 +49,18 @@
 | [`tools/build_financial_model_planA.py`](tools/build_financial_model_planA.py) | Plan A 压缩版财务模型生成器 |
 | [`tools/钢铁数字化系统_首年财务预测模型_PlanA.xlsx`](tools/钢铁数字化系统_首年财务预测模型_PlanA.xlsx) | **Plan A 压缩版财务模型**（与基准版对比验证） |
 
+### v5.0 增量包（**Plan A 启动 90 天工具箱**）
+| 文件 | 说明 |
+|---|---|
+| [`docs/15-作战日历2026年4到6月.md`](docs/15-作战日历2026年4到6月.md) | **2026.04-06 三个月作战日历**：12 周精确到天 + 90 天预算 |
+| [`tools/作战日历_2026年4到6月_甘特图.xlsx`](tools/作战日历_2026年4到6月_甘特图.xlsx) | 作战日历 Excel：总览看板 + 12 周甘特图 + 周任务清单 + 6 月生死线 + 90 天预算 |
+| [`docs/16-灯塔厂候选名单调研与评分模板.md`](docs/16-灯塔厂候选名单调研与评分模板.md) | **灯塔厂调研**：3 不要 + 5 必要 + 10 维度评分模型 + 调研 4 板斧 + 1 页档案模板 |
+| [`tools/灯塔厂候选30家_评分表.xlsx`](tools/灯塔厂候选30家_评分表.xlsx) | 30 家候选评分 Excel：自动算总分 + 等级（S/A/B/C）+ 分布 + 推进进度 |
+| [`docs/17-老板局倒推5周邀约脚本.md`](docs/17-老板局倒推5周邀约脚本.md) | **第 1 场老板局邀约脚本**：T-5 → T+7 完整话术 + 5 周时间轴 + 7 个细节 |
+| [`tools/老板局邀约_跟踪表.xlsx`](tools/老板局邀约_跟踪表.xlsx) | 邀约跟踪 Excel：12 老板跟踪 + 5 周时间轴 + 现场座位安排 + T+7 跟进 |
+| [`docs/18-6个月生死线周战报模板.md`](docs/18-6个月生死线周战报模板.md) | **周战报模板**：5 数字+3 故事+1 决策 + 月度战报 + W6/W12 评估 |
+| [`tools/周战报_6个月生死线跟踪表.xlsx`](tools/周战报_6个月生死线跟踪表.xlsx) | 周战报 Excel：单周模板 + 24 周看板 + 生死线自动评级 + 月度汇总 + W6/W12 评估 |
+
 ## 重新生成工具
 
 ```bash
@@ -69,6 +81,12 @@ python3 tools/build_financial_model.py
 # 首年财务预测模型（Plan A 压缩版，21 个月节奏）
 python3 tools/build_financial_model_planA.py
 # 输出: tools/钢铁数字化系统_首年财务预测模型_PlanA.xlsx
+
+# Plan A 启动 90 天 4 个 Excel 工具
+python3 tools/build_battle_calendar.py        # 作战日历甘特图
+python3 tools/build_lighthouse_scoring.py     # 灯塔厂 30 家评分表
+python3 tools/build_invitation_tracker.py     # 老板局邀约跟踪表
+python3 tools/build_weekly_report.py          # 周战报跟踪表
 
 # 在线健康度自评（直接用浏览器打开即可）
 # tools/health_assessment.html
