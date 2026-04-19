@@ -61,6 +61,16 @@
 | [`docs/18-6个月生死线周战报模板.md`](docs/18-6个月生死线周战报模板.md) | **周战报模板**：5 数字+3 故事+1 决策 + 月度战报 + W6/W12 评估 |
 | [`tools/周战报_6个月生死线跟踪表.xlsx`](tools/周战报_6个月生死线跟踪表.xlsx) | 周战报 Excel：单周模板 + 24 周看板 + 生死线自动评级 + 月度汇总 + W6/W12 评估 |
 
+### v6.0 增量包（**执行落地深度工具 6 件套**）
+| 文件 | 说明 |
+|---|---|
+| [`docs/19-灯塔厂30天POC部署清单.md`](docs/19-灯塔厂30天POC部署清单.md) | **第 1 家灯塔厂 30 天 POC 部署清单**：D1-D30 每日动作 + KPI + 风险预案 |
+| [`tools/灯塔厂30天POC_部署清单.xlsx`](tools/灯塔厂30天POC_部署清单.xlsx) | POC 30 天 Excel（6 sheet）：日程总览 + 每日任务 + KPI 跟踪 + 风险表 + 预算 |
+| [`docs/20-行业熟人引荐路径模板.md`](docs/20-行业熟人引荐路径模板.md) | **30 家清单的引荐路径武器库**：6 类引荐人 + 路径分配 + 4 步标准化流程 + 3 真实案例 |
+| [`docs/21-老板局现场稿件全集.md`](docs/21-老板局现场稿件全集.md) | **老板局现场 3 段稿件**：主持人开场（3 min）+ 灯塔厂老板演讲（30 min）+ CEO 讲解（15 min） |
+| [`docs/22-销售铁三角招聘面试题.md`](docs/22-销售铁三角招聘面试题.md) | **销售/售前/实施 3 角色 × 7 道面试题** + 4 轮面试 + 试用期 KPI + 6 大红线 |
+| [`docs/23-合伙人启动话术-前5个老客户.md`](docs/23-合伙人启动话术-前5个老客户.md) | **前 5 位老客户合伙人启动**：候选画像 + 5 步流程 + 完整 90 分钟见面话术 + 异议库 |
+
 ## 重新生成工具
 
 ```bash
@@ -87,6 +97,7 @@ python3 tools/build_battle_calendar.py        # 作战日历甘特图
 python3 tools/build_lighthouse_scoring.py     # 灯塔厂 30 家评分表
 python3 tools/build_invitation_tracker.py     # 老板局邀约跟踪表
 python3 tools/build_weekly_report.py          # 周战报跟踪表
+python3 tools/build_poc_schedule.py           # 灯塔厂 30 天 POC 部署清单
 
 # 在线健康度自评（直接用浏览器打开即可）
 # tools/health_assessment.html
