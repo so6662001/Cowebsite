@@ -76,6 +76,13 @@
 |---|---|
 | [`docs/24-钢贸交易平台与SaaS业务战略分析.md`](docs/24-钢贸交易平台与SaaS业务战略分析.md) | **钢贸新业务深度战略推演**：A 闭环深析 + 中国钢贸市场基本盘 + TAM/SAM/SOM 三档测算 + 找钢网/钢银差异化战略 + 12/36 月落地节奏 + 5 个生死决策 |
 
+### v8.0 增量包（**钢贸 ABC 闭环具体定价 + 测算**）
+| 文件 | 说明 |
+|---|---|
+| [`docs/25-钢贸ABC闭环定价体系与测算.md`](docs/25-钢贸ABC闭环定价体系与测算.md) | **6 大产品定价体系**（ERP/WMS+5 产品）+ 5 层客户分层 + ARPU 测算 + 升级路径 + 3 年总营收 ¥3.71 亿 |
+| [`tools/钢贸定价与3年测算模型.xlsx`](tools/钢贸定价与3年测算模型.xlsx) | 钢贸定价测算 Excel（8 sheet）：6 产品价格 + 5 层客户 + ARPU 配置器 + Y3 金字塔 + 3 年营收 + 信用数据 + 估值融资 |
+| [`tools/build_steeltrade_pricing.py`](tools/build_steeltrade_pricing.py) | 钢贸定价 Excel 生成脚本 |
+
 ## 重新生成工具
 
 ```bash
@@ -103,6 +110,7 @@ python3 tools/build_lighthouse_scoring.py     # 灯塔厂 30 家评分表
 python3 tools/build_invitation_tracker.py     # 老板局邀约跟踪表
 python3 tools/build_weekly_report.py          # 周战报跟踪表
 python3 tools/build_poc_schedule.py           # 灯塔厂 30 天 POC 部署清单
+python3 tools/build_steeltrade_pricing.py     # 钢贸定价与 3 年测算模型
 
 # 在线健康度自评（直接用浏览器打开即可）
 # tools/health_assessment.html
