@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>钢贸企业 10 大困境健康度自评 - 5 分钟出报告</title>
+<style>
+:root {
+  --primary: #1F4E79;
+  --accent: #2E75B6;
+  --bg: #F4F7FB;
+  --card: #FFFFFF;
+  --border: #E1E8F0;
+  --good: #52C41A;
+  --warn: #FAAD14;
+  --bad: #FF4D4F;
+  --text: #1F2937;
+  --muted: #6B7280;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.6; padding: 0 16px;
+}
+.container { max-width: 720px; margin: 0 auto; padding: 24px 0 80px; }
+.header {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white; padding: 32px 24px; border-radius: 12px;
+  margin-bottom: 24px; text-align: center;
+}
+.header h1 { font-size: 22px; margin-bottom: 8px; }
+.header p { opacity: 0.9; font-size: 13px; }
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px; margin-bottom: 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.progress-wrap {
+  display: flex; align-items: center; gap: 12px;
+  position: sticky; top: 0; background: var(--bg);
+  padding: 12px 0; margin: -12px 0 12px; z-index: 10;
+}
+.progress { flex: 1; height: 8px; background: var(--border); border-radius: 999px; overflow: hidden; }
+.progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--primary)); transition: width .3s; width: 0%; }
+.progress-text { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.step-input { display: flex; flex-direction: column; gap: 12px; }
+.step-input label { font-size: 13px; color: var(--muted); }
+.step-input input, .step-input select {
+  width: 100%; padding: 12px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: 15px; background: white;
+}
+.q-num { font-size: 13px; color: var(--accent); font-weight: 600; }
+.q-cat { font-size: 12px; color: var(--muted); margin-left: 8px; }
+.q-title { font-size: 16px; margin: 6px 0 16px; line-height: 1.5; }
+.options { display: flex; flex-direction: column; gap: 10px; }
+.option {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; border: 2px solid var(--border);
+  border-radius: 10px; cursor: pointer; transition: all .15s; background: white;
+}
+.option:hover { border-color: var(--accent); background: #F8FBFE; }
+.option.selected { border-color: var(--primary); background: #EAF3FA; }
+.option .score { font-size: 12px; color: var(--muted); padding: 2px 8px; border-radius: 999px; background: var(--border); }
+.option.selected .score { background: var(--primary); color: white; }
+.option .text { flex: 1; font-size: 14px; }
+.btn {
+  display: inline-block; padding: 14px 28px; background: var(--primary);
+  color: white; border: none; border-radius: 8px;
+  font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none;
+}
+.btn:hover { background: #163E61; }
+.btn-block { display: block; width: 100%; text-align: center; }
+.btn-secondary { background: white; color: var(--primary); border: 1px solid var(--primary); }
+.nav { display: flex; gap: 12px; margin-top: 16px; }
+.nav .btn { flex: 1; }
+.result-grade { text-align: center; padding: 28px; border-radius: 12px; color: white; margin-bottom: 16px; }
+.grade-A { background: linear-gradient(135deg, #52C41A, #389E0D); }
+.grade-B { background: linear-gradient(135deg, #FAAD14, #D48806); }
+.grade-C { background: linear-gradient(135deg, #FA8C16, #D46B08); }
+.grade-D { background: linear-gradient(135deg, #FF4D4F, #CF1322); }
+.result-grade h2 { font-size: 36px; margin-bottom: 8px; }
+.score-bar { display: flex; flex-direction: column; gap: 8px; }
+.score-bar .row { display: flex; align-items: center; gap: 12px; }
+.score-bar .label { width: 110px; font-size: 13px; }
+.score-bar .bar { flex: 1; height: 14px; background: var(--border); border-radius: 999px; overflow: hidden; }
+.score-bar .fill { height: 100%; transition: width .6s; border-radius: 999px; }
+.score-bar .fill.good { background: var(--good); }
+.score-bar .fill.warn { background: var(--warn); }
+.score-bar .fill.bad { background: var(--bad); }
+.score-bar .pct { width: 60px; text-align: right; font-size: 13px; color: var(--muted); }
+.recommendation {
+  background: #F0F8FF; border-left: 4px solid var(--primary);
+  padding: 14px 16px; border-radius: 4px; font-size: 14px; margin: 12px 0;
+}
+.contact {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white; padding: 24px; border-radius: 12px; text-align: center;
+}
+.contact h3 { font-size: 18px; margin-bottom: 8px; }
+.contact p { opacity: 0.95; font-size: 14px; margin-bottom: 16px; }
+.contact .btn { background: white; color: var(--primary); }
+.footer { text-align: center; color: var(--muted); font-size: 12px; padding: 24px 0; }
+.hide { display: none; }
+@media print {
+  .header, .nav, .progress-wrap, .contact, .footer { display: none; }
+  body { background: white; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>钢贸企业健康度自评</h1>
+  <p>10 大困境 · 30 题 · 5 分钟 · 立即出报告</p>
+</div>
+
+<!-- Step 1: 基础信息 -->
+<div id="step-info" class="card">
+  <div class="q-num">第 1 步 / 共 3 步</div>
+  <h2 class="q-title">告诉我们一些基础信息</h2>
+  <div class="step-input">
+    <div>
+      <label>企业名称</label>
+      <input type="text" id="company" placeholder="例：XX 钢贸有限公司">
+    </div>
+    <div>
+      <label>主营业务</label>
+      <select id="business">
+        <option>钢贸纯贸易</option>
+        <option>加工配送中心</option>
+        <option>开平 / 纵剪</option>
+        <option>多元化（贸易 + 加工 + 配送）</option>
+      </select>
+    </div>
+    <div>
+      <label>年流水（亿元）</label>
+      <select id="scale">
+        <option>≤ 0.3 亿</option>
+        <option>0.3-1 亿</option>
+        <option>1-3 亿</option>
+        <option>3-10 亿</option>
+        <option>> 10 亿</option>
+      </select>
+    </div>
+    <div>
+      <label>您的姓名 / 职务</label>
+      <input type="text" id="name" placeholder="例：张总 / 董事长">
+    </div>
+    <div>
+      <label>您的手机号（用于接收 PDF 报告）</label>
+      <input type="tel" id="phone" placeholder="例：138-XXXX-XXXX">
+    </div>
+  </div>
+  <button class="btn btn-block" style="margin-top: 20px;" onclick="startQuiz()">开始 5 分钟自评 →</button>
+</div>
+
+<!-- Step 2: 30 题 -->
+<div id="step-quiz" class="card hide">
+  <div class="progress-wrap">
+    <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+    <div class="progress-text" id="progress-text">0 / 30</div>
+  </div>
+  <div class="q-num">第 <span id="q-idx">1</span> 题 <span class="q-cat" id="q-cat">利润成本</span></div>
+  <h2 class="q-title" id="q-title">题目载入中…</h2>
+  <div class="options" id="q-options"></div>
+  <div class="nav">
+    <button class="btn btn-secondary" onclick="prevQ()">← 上一题</button>
+    <button class="btn" onclick="nextQ()" id="next-btn">下一题 →</button>
+  </div>
+</div>
+
+<!-- Step 3: 结果 -->
+<div id="step-result" class="hide">
+  <div class="result-grade" id="result-grade">
+    <h2 id="grade-letter">B</h2>
+    <p id="grade-text">亚健康（B 级）</p>
+    <p style="font-size: 13px; margin-top: 8px;">总分 <span id="total-score">0</span> / 150</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom: 16px;">七大模块得分</h3>
+    <div class="score-bar" id="module-scores"></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom: 12px;">您的数字化处方</h3>
+    <div class="recommendation" id="recommendation"></div>
+    <h4 style="margin: 16px 0 8px;">最优先解决的 3 个痛点</h4>
+    <ol id="top-pains" style="padding-left: 20px; line-height: 1.8;"></ol>
+    <h4 style="margin: 16px 0 8px;">推荐方案</h4>
+    <div id="solution"></div>
+  </div>
+
+  <div class="contact">
+    <h3>免费获取详细方案</h3>
+    <p>专家将在 1 个工作日内联系您，含 PDF 报告 + 同行案例</p>
+    <a class="btn" href="javascript:void(0)" onclick="submitContact()">领取详细方案</a>
+  </div>
+
+  <div class="card" style="margin-top: 16px; text-align: center;">
+    <button class="btn btn-secondary" onclick="window.print()">打印 / 保存 PDF</button>
+    <button class="btn btn-secondary" style="margin-left: 8px;" onclick="restart()">重新评估</button>
+  </div>
+</div>
+
+<div class="footer">
+  © 钢联数字化 · 钢贸企业健康度自评 v1.0
+</div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  // 利润成本（5 题）
+  { cat: '利润成本', q: '您今年到现在的毛利率大概是多少？', opts: [['≥ 5%', 5], ['3-5%', 3], ['1-3%', 2], ['< 1%', 1]] },
+  { cat: '利润成本', q: '您能算清每个客户的真实毛利吗？', opts: [['能精确算', 5], ['大致清楚', 3], ['算不清', 1]] },
+  { cat: '利润成本', q: '您能算清每个产品的真实毛利吗？', opts: [['能', 5], ['部分能', 3], ['不能', 1]] },
+  { cat: '利润成本', q: '您每月被迫让利大约多少？', opts: [['< 5 万', 5], ['5-20 万', 3], ['> 20 万', 1]] },
+  { cat: '利润成本', q: '同行前 3 大利润率和您比？', opts: [['您更高', 5], ['差不多', 3], ['您更低', 1]] },
+
+  // 应收账款（4 题）
+  { cat: '应收账款', q: '您 90 天 + 应收账款占比？', opts: [['< 10%', 5], ['10-25%', 3], ['25-40%', 2], ['> 40%', 1]] },
+  { cat: '应收账款', q: '您有应收账款预警系统吗？', opts: [['有自动预警', 5], ['人工跟', 3], ['没有', 1]] },
+  { cat: '应收账款', q: '上月坏账金额？', opts: [['0', 5], ['< 5 万', 3], ['5-20 万', 2], ['> 20 万', 1]] },
+  { cat: '应收账款', q: '您给每个客户的授信额度怎么定？', opts: [['数据化', 5], ['经验', 3], ['没标准', 1]] },
+
+  // 库存钢价（4 题）
+  { cat: '库存钢价', q: '您库存账实差是多少？', opts: [['< 1%', 5], ['1-5%', 3], ['5-15%', 2], ['> 15%', 1]] },
+  { cat: '库存钢价', q: '您每月盘点要几天？', opts: [['1 天', 5], ['2-3 天', 3], ['> 3 天', 1]] },
+  { cat: '库存钢价', q: '您能预警钢价波动吗？', opts: [['实时预警', 5], ['关注但慢', 3], ['不关注', 1]] },
+  { cat: '库存钢价', q: '您库存周转天数？', opts: [['< 30 天', 5], ['30-60 天', 3], ['> 60 天', 1]] },
+
+  // 客户管理（5 题）
+  { cat: '客户管理', q: '您今年丢了多少老客户？', opts: [['< 5%', 5], ['5-15%', 3], ['15-30%', 2], ['> 30%', 1]] },
+  { cat: '客户管理', q: '您今年获多少新客户？', opts: [['> 20', 5], ['10-20', 3], ['5-10', 2], ['< 5', 1]] },
+  { cat: '客户管理', q: '您能给客户分级吗？', opts: [['系统分级', 5], ['手工分', 3], ['没分', 1]] },
+  { cat: '客户管理', q: '今年因审厂没过丢了多少订单？', opts: [['0', 5], ['1-2 个', 3], ['> 2 个', 1]] },
+  { cat: '客户管理', q: '您接出口 / 汽车 / 家电客户比例？', opts: [['> 30%', 5], ['10-30%', 3], ['< 10%', 1]] },
+
+  // 销售跑单（3 题）
+  { cat: '销售跑单', q: '您今年销售离职率？', opts: [['< 10%', 5], ['10-25%', 3], ['> 25%', 1]] },
+  { cat: '销售跑单', q: '销售离职带走客户比例？', opts: [['< 10%', 5], ['10-30%', 3], ['> 30%', 1]] },
+  { cat: '销售跑单', q: '您能 1 周内让新销售接手客户吗？', opts: [['能', 5], ['有点难', 3], ['不能', 1]] },
+
+  // 数字化系统（4 题）
+  { cat: '数字化系统', q: '您有几套软件？是否互通？', opts: [['全套互通', 5], ['几套不互通', 3], ['只有 1 套', 2], ['基本手工', 1]] },
+  { cat: '数字化系统', q: '账目从产生到看到要多久？', opts: [['实时', 5], ['1 天内', 3], ['1 周', 2], ['> 1 月', 1]] },
+  { cat: '数字化系统', q: '您手机能看到今天业绩吗？', opts: [['能', 5], ['部分', 3], ['不能', 1]] },
+  { cat: '数字化系统', q: '您打算 2027 年继续靠经验经营吗？', opts: [['不，要上系统', 5], ['看情况', 3], ['继续靠经验', 1]] },
+
+  // 人才接班（5 题）
+  { cat: '人才接班', q: '您年龄？', opts: [['< 45', 5], ['45-55', 3], ['55-65', 2], ['> 65', 1]] },
+  { cat: '人才接班', q: '您有打算接班的人吗？', opts: [['有，已交班', 5], ['有，准备中', 4], ['有，对方不愿', 2], ['没有', 1]] },
+  { cat: '人才接班', q: '接班人 / 二代愿意接吗？', opts: [['愿意', 5], ['犹豫', 3], ['不愿', 1]] },
+  { cat: '人才接班', q: '您能 2 个月不去公司业务正常吗？', opts: [['能', 5], ['1 个月', 3], ['不能', 1]] },
+  { cat: '人才接班', q: '您 2027-2028 战略是？', opts: [['数字化升级', 5], ['观望', 3], ['考虑退出', 1]] },
+];
+
+const MODULES = ['利润成本', '应收账款', '库存钢价', '客户管理', '销售跑单', '数字化系统', '人才接班'];
+const MODULE_MAX = { '利润成本': 25, '应收账款': 20, '库存钢价': 20, '客户管理': 25, '销售跑单': 15, '数字化系统': 20, '人才接班': 25 };
+
+let currentIdx = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+let userInfo = {};
+
+function startQuiz() {
+  const company = document.getElementById('company').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  if (!company || !phone) { alert('请填写企业名称和手机号'); return; }
+  userInfo = {
+    company, business: document.getElementById('business').value,
+    scale: document.getElementById('scale').value,
+    name: document.getElementById('name').value, phone,
+  };
+  document.getElementById('step-info').classList.add('hide');
+  document.getElementById('step-quiz').classList.remove('hide');
+  renderQ();
+}
+
+function renderQ() {
+  const q = QUESTIONS[currentIdx];
+  document.getElementById('q-idx').textContent = currentIdx + 1;
+  document.getElementById('q-cat').textContent = q.cat;
+  document.getElementById('q-title').textContent = q.q;
+  const opts = document.getElementById('q-options');
+  opts.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option' + (answers[currentIdx] === opt[1] ? ' selected' : '');
+    div.innerHTML = `<span class="text">${opt[0]}</span><span class="score">${opt[1]} 分</span>`;
+    div.onclick = () => {
+      answers[currentIdx] = opt[1];
+      renderQ();
+      setTimeout(nextQ, 250);
+    };
+    opts.appendChild(div);
+  });
+  document.getElementById('progress-bar').style.width = ((currentIdx + 1) / QUESTIONS.length * 100) + '%';
+  document.getElementById('progress-text').textContent = `${currentIdx + 1} / ${QUESTIONS.length}`;
+  document.getElementById('next-btn').textContent = currentIdx === QUESTIONS.length - 1 ? '查看报告 →' : '下一题 →';
+}
+
+function prevQ() { if (currentIdx > 0) { currentIdx--; renderQ(); } }
+
+function nextQ() {
+  if (answers[currentIdx] === null) { alert('请先选择一个选项'); return; }
+  if (currentIdx < QUESTIONS.length - 1) { currentIdx++; renderQ(); }
+  else { showResult(); }
+}
+
+function showResult() {
+  document.getElementById('step-quiz').classList.add('hide');
+  document.getElementById('step-result').classList.remove('hide');
+
+  const moduleScores = {};
+  MODULES.forEach(m => moduleScores[m] = 0);
+  QUESTIONS.forEach((q, i) => { moduleScores[q.cat] += answers[i] || 0; });
+  const total = Object.values(moduleScores).reduce((a,b) => a+b, 0);
+
+  document.getElementById('total-score').textContent = total;
+
+  let grade, gradeText, gradeClass, recText, solution;
+  if (total >= 120) {
+    grade = 'A'; gradeText = '健康（A 级）'; gradeClass = 'grade-A';
+    recText = '您已具备较好的数字化基础，建议升级到「旗舰版 + 三位一体咨询」做深度优化。';
+    solution = '<b>推荐方案：</b>旗舰版 ERP/WMS + 全套 AI + 接班咨询，¥30-100 万 / 年';
+  } else if (total >= 90) {
+    grade = 'B'; gradeText = '亚健康（B 级）'; gradeClass = 'grade-B';
+    recText = '单点能力可以，整体协同弱。建议「经营版 + 部分咨询」3 个月内打通核心模块。';
+    solution = '<b>推荐方案：</b>经营版 ERP + AI 经营包 + 货袋子 + 风控咨询，¥15-40 万 / 年';
+  } else if (total >= 60) {
+    grade = 'C'; gradeText = '病弱（C 级）'; gradeClass = 'grade-C';
+    recText = '多个模块缺失。建议先「种子版」试点 1-2 个最痛模块，3 周见效再升级。';
+    solution = '<b>推荐方案：</b>钢贸 ERP 入门版 + AI 入门包 + 急救咨询，¥6-20 万 / 年';
+  } else {
+    grade = 'D'; gradeText = '危险（D 级）'; gradeClass = 'grade-D';
+    recText = '数字化几乎为零。强烈建议预约 3 天免费工作坊，先做流程梳理 + 风险评估。';
+    solution = '<b>推荐方案：</b>风控 + 客户管理 急救 + AI 风险预警，¥3-8 万 / 年起步';
+  }
+
+  document.getElementById('grade-letter').textContent = grade;
+  document.getElementById('grade-text').textContent = gradeText;
+  document.getElementById('result-grade').className = 'result-grade ' + gradeClass;
+  document.getElementById('recommendation').innerHTML = recText;
+  document.getElementById('solution').innerHTML = solution;
+
+  // 模块得分条
+  const sb = document.getElementById('module-scores');
+  sb.innerHTML = '';
+  MODULES.forEach(m => {
+    const score = moduleScores[m];
+    const max = MODULE_MAX[m];
+    const pct = score / max;
+    const cls = pct >= 0.8 ? 'good' : pct >= 0.5 ? 'warn' : 'bad';
+    sb.innerHTML += `
+      <div class="row">
+        <div class="label">${m}</div>
+        <div class="bar"><div class="fill ${cls}" style="width: ${pct*100}%"></div></div>
+        <div class="pct">${score} / ${max}</div>
+      </div>`;
+  });
+
+  // TOP 3 痛点
+  const sortedModules = MODULES.map(m => ({m, pct: moduleScores[m] / MODULE_MAX[m]}))
+                                .sort((a,b) => a.pct - b.pct);
+  const painMap = {
+    '利润成本': '利润持续压缩 → 推 ERP + AI 客户分级 + 智能定价',
+    '应收账款': '应收风险高 → 推 AI 风控 + 应收预警 + 对账通',
+    '库存钢价': '库存风险高 → 推 WMS + AI 库存 + 钢价预警',
+    '客户管理': '客户流失 → 推 CRM + AI 客户管理 + 货袋子拓客',
+    '销售跑单': '销售离职带客户 → 推 CRM + AI 销售助理',
+    '数字化系统': '数字化滞后 → 推三位一体方案（软件+平台+咨询）',
+    '人才接班': '接班困难 → 推接班数字化工程 12 月（含咨询）',
+  };
+  const top = document.getElementById('top-pains');
+  top.innerHTML = '';
+  sortedModules.slice(0, 3).forEach(item => {
+    top.innerHTML += `<li>${painMap[item.m]}</li>`;
+  });
+}
+
+function submitContact() {
+  alert(`已收到！我们将在 1 个工作日内联系您（${userInfo.phone}）发送详细方案。\n\n感谢您的信任！`);
+}
+
+function restart() {
+  currentIdx = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  document.getElementById('step-result').classList.add('hide');
+  document.getElementById('step-info').classList.remove('hide');
+}
+</script>
+</body>
+</html>
