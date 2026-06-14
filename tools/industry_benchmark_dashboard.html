@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>钢贸 / 钢厂行业基准动态对照 · 钢联数字化研究院</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #1F4E78;
+    --gold: #FFC000;
+    --red: #C00000;
+    --orange: #ED7D31;
+    --green: #00B050;
+    --gray: #F2F2F2;
+    --text: #222;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf3 100%);
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+  header {
+    background: var(--navy);
+    color: #fff;
+    padding: 18px 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  }
+  header .h-wrap {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  }
+  header h1 { margin: 0; font-size: 20px; letter-spacing: .5px; }
+  header .meta { font-size: 12px; opacity: .85; }
+  header .badge {
+    background: var(--gold); color: #000;
+    padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(31,78,120,.06);
+  }
+  .card h2 {
+    font-size: 18px; margin: 0 0 14px 0; color: var(--navy);
+    border-left: 5px solid var(--gold); padding-left: 10px;
+  }
+  .card h3 { font-size: 15px; margin: 14px 0 8px 0; color: var(--navy); }
+
+  /* 输入区 */
+  .form-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 12px;
+  }
+  .field label {
+    display: block; font-size: 13px; color: #555; margin-bottom: 4px; font-weight: 600;
+  }
+  .field input, .field select {
+    width: 100%; padding: 9px 10px; font-size: 14px;
+    border: 1px solid #ccc; border-radius: 8px; outline: none;
+    background: #fff;
+  }
+  .field input:focus, .field select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(31,78,120,.12); }
+  .actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  button.btn {
+    padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer;
+    font-size: 15px; font-weight: 600;
+  }
+  button.btn-primary { background: var(--navy); color: #fff; }
+  button.btn-primary:hover { background: #163e60; }
+  button.btn-secondary { background: #fff; color: var(--navy); border: 1px solid var(--navy); }
+  button.btn-share { background: var(--gold); color: #000; }
+
+  /* 总体定位 */
+  .summary {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch;
+  }
+  @media (max-width: 760px) { .summary { grid-template-columns: 1fr; } }
+  .score-box {
+    text-align: center;
+    background: linear-gradient(135deg, var(--navy), #2f6cad);
+    color: #fff; border-radius: 12px; padding: 18px;
+  }
+  .score-box .num { font-size: 52px; font-weight: 800; line-height: 1; margin: 8px 0; }
+  .score-box .level { font-size: 16px; opacity: .9; }
+  .score-box .rank { margin-top: 10px; font-size: 14px; opacity: .85; }
+  .score-box.lvl-A { background: linear-gradient(135deg, #007a3a, #00b050); }
+  .score-box.lvl-B { background: linear-gradient(135deg, #2f6cad, #1F4E78); }
+  .score-box.lvl-C { background: linear-gradient(135deg, #d18b13, #ED7D31); }
+  .score-box.lvl-D { background: linear-gradient(135deg, #8b0000, #C00000); }
+
+  .radar-wrap { background:#fff; border-radius:12px; padding:8px; }
+
+  /* 对照表 */
+  table.compare {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  table.compare th, table.compare td {
+    padding: 8px 10px; border-bottom: 1px solid #eee; text-align: center;
+  }
+  table.compare th { background: #f4f7fb; color: var(--navy); font-weight: 700; }
+  table.compare td.metric-name { text-align: left; font-weight: 600; }
+  td.indicator-green { background: #e6f4ea; color: var(--green); font-weight: 700; }
+  td.indicator-yellow { background: #fef3e0; color: var(--orange); font-weight: 700; }
+  td.indicator-red { background: #fae5e5; color: var(--red); font-weight: 700; }
+
+  /* 红区 */
+  .redzone-list, .case-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 12px; }
+  .redzone, .case {
+    background: #fff; border-radius: 10px; padding: 14px; border-left: 5px solid var(--red);
+    box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  }
+  .case { border-left-color: var(--green); }
+  .redzone .title { font-weight: 700; color: var(--red); margin-bottom: 4px; }
+  .case .hero { font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .case .roi { color: var(--green); font-weight: 700; margin-top: 6px; }
+  .case .quote { font-style: italic; color: #555; margin-top: 6px; font-size: 13px; }
+
+  /* footer */
+  footer {
+    text-align: center; padding: 22px 16px; color: #777; font-size: 12px;
+  }
+
+  .hint {
+    background: #fff8e0; border-left: 4px solid var(--gold); padding: 10px 14px;
+    border-radius: 6px; font-size: 13px; color: #444; margin-bottom: 14px;
+  }
+
+  .placeholder {
+    text-align: center; padding: 60px 20px; color: #888; font-size: 15px;
+  }
+
+  .source-note { font-size: 12px; color: #999; text-align: right; margin-top: 6px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="h-wrap">
+    <h1>🏗️ 钢贸 / 钢厂行业基准动态对照</h1>
+    <div class="meta">
+      <span class="badge">2026 Q2 实时版</span>
+      &nbsp;基于 <strong>1,547</strong> 家钢贸 / 钢厂样本
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <!-- 输入区 -->
+  <div class="card">
+    <h2>1. 您的基本信息</h2>
+    <div class="hint">
+      💡 输入完点"开始对照" → 5 秒内看到您与同行 1,547 家的完整对照报告。<strong>数据脱敏处理 / 不存储个人信息</strong>。
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label>公司名（选填，仅本地显示）</label>
+        <input id="company" type="text" placeholder="如：XX 钢管 / 留空也可" />
+      </div>
+      <div class="field">
+        <label>年流水（万元）<span style="color:red">*</span></label>
+        <input id="revenue" type="number" value="18000" min="100" max="1000000" />
+      </div>
+      <div class="field">
+        <label>行业类型 <span style="color:red">*</span></label>
+        <select id="industry">
+          <option value="钢管">钢管厂</option>
+          <option value="镀锌">镀锌 / 冷卷厂</option>
+          <option value="开平">开平 / 纵剪加工</option>
+          <option value="综合钢贸" selected>综合钢贸（贸易型）</option>
+          <option value="钢厂">钢厂（生产型综合）</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>所在地区 <span style="color:red">*</span></label>
+        <select id="region">
+          <option value="长三角">长三角（江浙沪皖）</option>
+          <option value="珠三角">珠三角（粤桂闽）</option>
+          <option value="京津冀" selected>京津冀（京津冀豫鲁）</option>
+          <option value="华中">华中（鄂湘赣）</option>
+          <option value="西南">西南（川渝云贵）</option>
+          <option value="全国">其他 / 全国基准</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>业态（选填）</label>
+        <select id="biz">
+          <option value="">不限</option>
+          <option value="加工">加工型</option>
+          <option value="贸易">纯贸易</option>
+          <option value="流通">流通 + 仓储</option>
+          <option value="综合" selected>综合型</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>成立年份（选填）</label>
+        <input id="founded" type="number" placeholder="2005" />
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" id="btnCompare">📊 开始对照</button>
+      <button class="btn btn-secondary" id="btnReset">↻ 重置</button>
+      <button class="btn btn-share" id="btnShare" style="display:none">🖼 生成分享海报</button>
+    </div>
+    <div class="source-note">
+      数据来源：钢联数字化研究院 · 1,547 家钢贸 / 钢厂样本 · 每周自动更新 · 季度交叉校验
+    </div>
+  </div>
+
+  <!-- 结果占位 -->
+  <div id="result">
+    <div class="card placeholder">
+      👆 请在上方填入您的信息并点击"开始对照" 按钮，即可生成专属对照报告。
+    </div>
+  </div>
+</div>
+
+<footer>
+  钢联数字化研究院 · 1,547 家钢贸 / 钢厂样本 · 数据每周自动更新<br>
+  ⚠️ 本工具仅供决策参考，最终请以 30 题完整健康度自评 + 现场咨询为准<br>
+  © 2026 · 联系电话 400-XXX-XXXX · 钢贸数字化服务平台
+</footer>
+
+<script>
+/* ============================================================
+ * Mock 基准数据（生产环境从后端 API 拉取）
+ * ============================================================ */
+const REGIONS = ["长三角","珠三角","京津冀","华中","西南","全国"];
+
+// 各地区 7 模块平均分（来自我们 1,547 客户聚合）
+const REGION_MODULE_AVG = {
+  "长三角":  { M1:72, M2:70, M3:83, M4:74, M5:75, M6:74, M7:70, total:76.2 },
+  "珠三角":  { M1:69, M2:68, M3:73, M4:72, M5:75, M6:69, M7:74, total:71.5 },
+  "京津冀":  { M1:60, M2:60, M3:55, M4:68, M5:62, M6:65, M7:60, total:64.8 },
+  "华中":    { M1:67, M2:65, M3:62, M4:69, M5:67, M6:68, M7:65, total:69.3 },
+  "西南":    { M1:65, M2:63, M3:60, M4:67, M5:65, M6:66, M7:62, total:65.5 },
+  "全国":    { M1:67.8, M2:64.3, M3:61.2, M4:70.5, M5:67.2, M6:70.1, M7:62.5, total:68.5 },
+};
+
+// 各行业 7 模块平均
+const INDUSTRY_MODULE_AVG = {
+  "钢管":     { M1:68, M2:65, M3:63, M4:70, M5:69, M6:71, M7:62, total:69.0 },
+  "镀锌":     { M1:72, M2:68, M3:70, M4:73, M5:73, M6:73, M7:67, total:73.2 },
+  "开平":     { M1:64, M2:62, M3:58, M4:68, M5:65, M6:67, M7:60, total:65.3 },
+  "综合钢贸": { M1:65, M2:64, M3:60, M4:69, M5:66, M6:69, M7:62, total:67.5 },
+  "钢厂":     { M1:74, M2:70, M3:73, M4:75, M5:72, M6:74, M7:70, total:75.0 },
+};
+
+// 15 项关键指标（按行业 × 地区）
+// 简化：行业 + 地区独立给出基准值
+const METRICS = [
+  { code:"gross_margin",   name:"毛利率",         unit:"%",   direction:"higher", base_industry:{钢管:3.8,镀锌:4.2,开平:2.2,综合钢贸:2.8,钢厂:4.5}, base_region:{长三角:3.5,珠三角:3.2,京津冀:2.5,华中:2.9,西南:2.8,全国:2.8}, healthy:4.0, warning:[2,4], danger:2.0 },
+  { code:"net_margin",     name:"净利率",         unit:"%",   direction:"higher", base_industry:{钢管:2.0,镀锌:2.4,开平:1.0,综合钢贸:1.4,钢厂:2.6}, base_region:{长三角:1.9,珠三角:1.6,京津冀:1.0,华中:1.5,西南:1.4,全国:1.4}, healthy:2.0, warning:[0.5,2], danger:0.5 },
+  { code:"ar_overdue_90",  name:"90天+应收占比",   unit:"%",   direction:"lower",  base_industry:{钢管:22,镀锌:18,开平:15,综合钢贸:25,钢厂:18}, base_region:{长三角:18,珠三角:21,京津冀:32,华中:24,西南:25,全国:25}, healthy:15, warning:[15,30], danger:30 },
+  { code:"inv_turnover",   name:"库存周转(天)",   unit:"天",  direction:"lower",  base_industry:{钢管:52,镀锌:55,开平:30,综合钢贸:48,钢厂:55}, base_region:{长三角:38,珠三角:35,京津冀:55,华中:48,西南:50,全国:48}, healthy:30, warning:[30,60], danger:60 },
+  { code:"debt_ratio",     name:"资产负债率",      unit:"%",   direction:"lower",  base_industry:{钢管:66,镀锌:70,开平:60,综合钢贸:68,钢厂:65}, base_region:{长三角:62,珠三角:65,京津冀:73,华中:67,西南:69,全国:68}, healthy:60, warning:[60,75], danger:75 },
+  { code:"customer_churn", name:"客户流失率",     unit:"%",   direction:"lower",  base_industry:{钢管:12,镀锌:11,开平:15,综合钢贸:14,钢厂:9}, base_region:{长三角:11,珠三角:13,京津冀:17,华中:14,西南:15,全国:14}, healthy:8, warning:[8,15], danger:15 },
+  { code:"top5_dependency",name:"TOP5客户依赖",    unit:"%",   direction:"lower",  base_industry:{钢管:40,镀锌:38,开平:48,综合钢贸:42,钢厂:35}, base_region:{长三角:35,珠三角:38,京津冀:48,华中:42,西南:45,全国:42}, healthy:30, warning:[30,50], danger:50 },
+  { code:"export_ratio",   name:"出口客户比例",   unit:"%",   direction:"higher", base_industry:{钢管:18,镀锌:22,开平:8,综合钢贸:15,钢厂:20}, base_region:{长三角:28,珠三角:22,京津冀:8,华中:12,西南:10,全国:15}, healthy:20, warning:[5,20], danger:5 },
+  { code:"sales_loss",     name:"销售跑单率",     unit:"%",   direction:"lower",  base_industry:{钢管:10,镀锌:9,开平:14,综合钢贸:12,钢厂:8}, base_region:{长三角:10,珠三角:13,京津冀:14,华中:12,西南:13,全国:12}, healthy:8, warning:[8,15], danger:15 },
+  { code:"erp_usage",      name:"ERP使用率",      unit:"%",   direction:"higher", base_industry:{钢管:55,镀锌:62,开平:38,综合钢贸:47,钢厂:65}, base_region:{长三角:63,珠三角:52,京津冀:38,华中:45,西南:42,全国:47}, healthy:90, warning:[50,90], danger:50 },
+  { code:"wms_usage",      name:"WMS使用率",       unit:"%",   direction:"higher", base_industry:{钢管:30,镀锌:38,开平:18,综合钢贸:25,钢厂:42}, base_region:{长三角:38,珠三角:28,京津冀:18,华中:22,西南:20,全国:25}, healthy:50, warning:[25,50], danger:25 },
+  { code:"ai_tools",       name:"AI工具数量(个)", unit:"个",  direction:"higher", base_industry:{钢管:0.6,镀锌:0.9,开平:0.3,综合钢贸:0.5,钢厂:0.8}, base_region:{长三角:1.2,珠三角:0.7,京津冀:0.3,华中:0.5,西南:0.4,全国:0.5}, healthy:3, warning:[1,3], danger:1 },
+  { code:"report_auto",    name:"数据日报自动化", unit:"%",   direction:"higher", base_industry:{钢管:28,镀锌:35,开平:18,综合钢贸:25,钢厂:42}, base_region:{长三角:42,珠三角:32,京津冀:18,华中:24,西南:22,全国:25}, healthy:80, warning:[40,80], danger:40 },
+  { code:"succession",     name:"二代实质接班",   unit:"%",   direction:"higher", base_industry:{钢管:22,镀锌:25,开平:20,综合钢贸:23,钢厂:25}, base_region:{长三角:28,珠三角:25,京津冀:12,华中:20,西南:18,全国:23}, healthy:40, warning:[15,40], danger:15 },
+  { code:"strategy_clarity",name:"3年战略清晰度", unit:"分",  direction:"higher", base_industry:{钢管:62,镀锌:65,开平:58,综合钢贸:62,钢厂:68}, base_region:{长三角:70,珠三角:65,京津冀:58,华中:62,西南:60,全国:62.5}, healthy:75, warning:[50,75], danger:50 },
+];
+
+// 案例库（按行业 + 模块筛选）
+const CASES = [
+  { industry:"钢管", region:"京津冀", module:"M1", revenue_band:"1-3亿",
+    hero:"山东 XX 钢管 王总", revenue:1.8,
+    before:"毛利 3.2% / 净利 0.8% / 应收 38%",
+    after:"毛利 4.5% / 净利 2.1% / 应收 18% / 年利润 +¥234 万",
+    investment:35, benefit:234, timeline:12,
+    quote:"做对一件事比做 100 件好。" },
+  { industry:"钢管", region:"长三角", module:"M3", revenue_band:"1-3亿",
+    hero:"江苏 XX 焊管 周总", revenue:1.2,
+    before:"出口审厂 0/3 通过 / 月报 18 天 / 账实差 12%",
+    after:"IATF 通过 / 出口 +¥1,500 万 / 月报 4 天",
+    investment:38, benefit:120, timeline:6,
+    quote:"不上系统不是省钱，是放弃出口客户。" },
+  { industry:"综合钢贸", region:"长三角", module:"M4", revenue_band:"1-3亿",
+    hero:"江苏 XX 钢贸 赵总", revenue:2.5,
+    before:"90 天+ 应收 38% / 现金沉淀 ¥9,500 万",
+    after:"应收 13% / 释放现金 ¥4,000 万 / 避免坏账 ¥320 万",
+    investment:18, benefit:469, timeline:9,
+    quote:"这一通电话救了我家公司。" },
+  { industry:"综合钢贸", region:"珠三角", module:"M2", revenue_band:"1-5亿",
+    hero:"广东 XX 钢贸 陈总", revenue:3.0,
+    before:"房地产 40% / 客户流失 14% / 营收 -8%",
+    after:"留存 92% / 出口 28% / 营收 +30%",
+    investment:42, benefit:520, timeline:12,
+    quote:"做 12 年钢贸，第一次知道客户画像长什么样。" },
+  { industry:"镀锌", region:"长三角", module:"M6", revenue_band:"3-10亿",
+    hero:"江苏 XX 镀锌 周总 + 二代", revenue:4.0,
+    before:"父子冲突 / 二代不愿接 / 估值 ¥1.5 亿",
+    after:"二代任 CTO / 营收 +25% / 估值 ¥2.5 亿",
+    investment:80, benefit:10000, timeline:12,
+    quote:"接班数字化让儿子接班 / 估值还涨了 ¥1 亿。" },
+  { industry:"镀锌", region:"长三角", module:"M5", revenue_band:"3-10亿",
+    hero:"浙江 XX 冷卷 钱总", revenue:6.0,
+    before:"锌价 6 次跌 / 库存损失 ¥540 万 / 周转 60 天",
+    after:"锌价对冲 / 损失 -60% / 周转 35 天",
+    investment:18, benefit:520, timeline:6,
+    quote:"以前做钢贸像赌博 / 现在像经营。" },
+  { industry:"开平", region:"长三角", module:"M5", revenue_band:"<1亿",
+    hero:"江苏 XX 加工 李总", revenue:0.5,
+    before:"3 台机 / 余料利用 60% / 客户流失 18%",
+    after:"余料 88% / 利润 +¥40 万 / 客户回流",
+    investment:12, benefit:85, timeline:6,
+    quote:"小厂也能数字化 / ¥1 万 / 月就跑起来。" },
+  { industry:"钢管", region:"京津冀", module:"M7", revenue_band:"3-5亿",
+    hero:"邯郸 XX 钢管 X 总", revenue:3.0,
+    before:"账实差 12% / 月报 18 天 / 4 条线不知哪条赚",
+    after:"账实差 0.8% / 月报 4 天 / 发现 ¥435 万隐性损失",
+    investment:22, benefit:435, timeline:9,
+    quote:"4 条线哪条赚钱我猜了 3 年。" },
+];
+
+const ACTION_ADVICE = {
+  "毛利率":   { advice:"建议：① ERP 6 线分账看清各线利润 ② AI 智能定价分线分客户 ③ 战略咨询砍掉低利润老客户", product:"ERP+AI 经营包 / ¥18 万/年" },
+  "净利率":   { advice:"建议：① 财务自动化 + 成本核算 ② 应收预警 ③ 战略咨询调整客户结构", product:"ERP+财务+战略 / ¥35 万/年" },
+  "90天+应收占比":{ advice:"★ 优先处理：① AI 风控客户分级 ② 对账通对账 ③ 应收预警 ④ 法务咨询", product:"AI 风控+对账通 / ¥18 万/年" },
+  "库存周转(天)":{ advice:"建议：① WMS+库准 ② AI 钢价预警 ③ 预订单模式 ④ 余料 AI 配对", product:"WMS+AI 库存 / ¥18 万/年" },
+  "资产负债率":{ advice:"建议：① 信用模型对接银行 ② 应收下降释放现金 ③ 战略咨询调整融资", product:"信用模型+财务 / ¥18 万/年" },
+  "客户流失率":{ advice:"建议：① CRM+AI 客户画像 ② 客户分级 ③ CS 顾问陪跑", product:"CRM+CS 陪跑 / ¥18 万/年" },
+  "TOP5客户依赖":{ advice:"建议：① 战略咨询调整结构 ② 现货平台拓客 ③ 出口拓展", product:"战略+现货 / ¥18 万/年" },
+  "出口客户比例":{ advice:"建议：① 出口数字化（IATF/API/审厂）② 数字化产品对接海外 ③ 出口咨询", product:"MES+出口咨询 / ¥38 万/年" },
+  "销售跑单率":{ advice:"建议：① CRM+AI 销售助理 ② 销售提成结构改革 ③ 客户绑公司不绑销售", product:"CRM+销售改革 / ¥15 万/年" },
+  "ERP使用率":{ advice:"建议：① 上 ERP（钢贸版/钢厂版）② 30 天免费试用 ③ 数据日报自动化", product:"ERP 经营版 / ¥18 万/年" },
+  "WMS使用率":{ advice:"建议：① 库准 WMS（含 PDA / 自动盘点）② IoT 接入", product:"WMS / ¥3 万/年" },
+  "AI工具数量(个)":{ advice:"建议：① 8 大 AI 产品按需上 ② 钢价/风控/客户画像优先", product:"AI 经营包 / ¥4 万/年" },
+  "数据日报自动化":{ advice:"建议：① ERP+财务联动 ② 自动 BI 出 18 个报表 ③ 数据指标体系搭建", product:"ERP+BI / ¥18 万/年" },
+  "二代实质接班":{ advice:"★ 关键：① 接班数字化工程（12月）② 二代俱乐部 ③ 股权激励设计", product:"接班数字化 / ¥80 万/年" },
+  "3年战略清晰度":{ advice:"建议：① 战略咨询（年度）② 老板局学习 ③ 二代联合规划", product:"战略咨询 / ¥30 万/年" },
+};
+
+/* ============================================================
+ * 计算逻辑
+ * ============================================================ */
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+function estimateUserMetrics(industry, region, revenue) {
+  // 简化：用客户行业 / 地区基准上下浮动给出一个"客户实测值"模拟
+  // 实际应来自客户填写的 30 题
+  const result = {};
+  METRICS.forEach(m => {
+    const baseI = m.base_industry[industry] ?? m.base_industry["综合钢贸"];
+    const baseR = m.base_region[region] ?? m.base_region["全国"];
+    // 简单加权 + 流水修正：大公司略好，小公司略差
+    let val = (baseI * 0.5 + baseR * 0.5);
+    const sizeFactor = revenue >= 50000 ? 1.05 : revenue >= 10000 ? 1.0 : revenue >= 3000 ? 0.95 : 0.88;
+    if (m.direction === "higher") val *= sizeFactor;
+    else val *= (2 - sizeFactor);
+    val = Math.round(val * 10) / 10;
+    result[m.code] = val;
+  });
+  return result;
+}
+
+function indicatorClass(metric, val) {
+  const { direction, healthy, warning, danger } = metric;
+  if (direction === "higher") {
+    if (val >= healthy) return "indicator-green";
+    if (val >= warning[0]) return "indicator-yellow";
+    return "indicator-red";
+  } else {
+    if (val <= healthy) return "indicator-green";
+    if (val <= warning[1]) return "indicator-yellow";
+    return "indicator-red";
+  }
+}
+
+function scoreFromMetric(metric, val) {
+  const { direction, healthy, danger } = metric;
+  if (direction === "higher") {
+    if (val >= healthy) return 95;
+    if (val <= danger) return 35;
+    return Math.round(35 + (val - danger) / (healthy - danger) * 60);
+  } else {
+    if (val <= healthy) return 95;
+    if (val >= danger) return 35;
+    return Math.round(35 + (danger - val) / (danger - healthy) * 60);
+  }
+}
+
+function computeUserModuleScores(metricValues) {
+  // 7 模块映射：M1-M7 每模块取 2-3 指标加权平均
+  const map = {
+    M1: ["gross_margin","net_margin","debt_ratio"],
+    M2: ["customer_churn","top5_dependency","sales_loss"],
+    M3: ["erp_usage","wms_usage","ai_tools","report_auto"],
+    M4: ["ar_overdue_90"],
+    M5: ["export_ratio","inv_turnover"],
+    M6: ["sales_loss","succession"],
+    M7: ["strategy_clarity"],
+  };
+  const r = {};
+  let total = 0, cnt = 0;
+  Object.keys(map).forEach(mod => {
+    const codes = map[mod];
+    let sum = 0;
+    codes.forEach(c => {
+      const m = METRICS.find(x => x.code === c);
+      sum += scoreFromMetric(m, metricValues[c]);
+    });
+    r[mod] = Math.round(sum / codes.length);
+    total += r[mod]; cnt++;
+  });
+  r.total = Math.round(total / cnt * 10) / 10;
+  return r;
+}
+
+function levelOf(score) {
+  if (score >= 90) return "A 健康";
+  if (score >= 80) return "B 良好";
+  if (score >= 60) return "C 亚健康";
+  return "D 高危";
+}
+
+function levelClass(score) {
+  if (score >= 90) return "lvl-A";
+  if (score >= 80) return "lvl-B";
+  if (score >= 60) return "lvl-C";
+  return "lvl-D";
+}
+
+function findCases(industry, region, redZoneModule) {
+  const out = [];
+  // 优先：同行业 + 同模块
+  CASES.forEach(c => {
+    if (c.industry === industry && c.module === redZoneModule) out.push(c);
+  });
+  // 次优：同行业
+  if (out.length < 3) {
+    CASES.forEach(c => {
+      if (c.industry === industry && !out.includes(c)) out.push(c);
+    });
+  }
+  // 补充：通用
+  if (out.length < 3) {
+    CASES.forEach(c => {
+      if (!out.includes(c)) out.push(c);
+    });
+  }
+  return out.slice(0,3);
+}
+
+/* ============================================================
+ * 渲染
+ * ============================================================ */
+let radarChart, trendChart;
+
+function render() {
+  const company = document.getElementById("company").value.trim() || "您的公司";
+  const revenue = parseFloat(document.getElementById("revenue").value) || 18000;
+  const industry = document.getElementById("industry").value;
+  const region = document.getElementById("region").value;
+
+  const userMetrics = estimateUserMetrics(industry, region, revenue);
+  const userScores = computeUserModuleScores(userMetrics);
+  const regionAvg = REGION_MODULE_AVG[region] || REGION_MODULE_AVG["全国"];
+  const industryAvg = INDUSTRY_MODULE_AVG[industry] || INDUSTRY_MODULE_AVG["综合钢贸"];
+  const ranking = userScores.total >= 80 ? "TOP 20%" : userScores.total >= 70 ? "TOP 35%" : userScores.total >= 60 ? "TOP 55%" : "BOTTOM 30%";
+
+  // 红区找出（< 60 分模块）
+  const moduleNames = { M1:"财务健康度",M2:"客户管理",M3:"数字化能力",M4:"风险控制",M5:"增长能力",M6:"团队能力",M7:"战略前瞻" };
+  const redModules = [];
+  ["M1","M2","M3","M4","M5","M6","M7"].forEach(m => {
+    if (userScores[m] < 60) redModules.push({code:m, name:moduleNames[m], score:userScores[m]});
+  });
+
+  // 红区指标
+  const redMetrics = [];
+  METRICS.forEach(m => {
+    const v = userMetrics[m.code];
+    const cls = indicatorClass(m, v);
+    if (cls === "indicator-red") redMetrics.push({metric:m, val:v});
+  });
+
+  const cases = findCases(industry, region, redModules[0]?.code || "M4");
+
+  const html = `
+    <!-- 屏 2：总体定位 -->
+    <div class="card">
+      <h2>2. 总体定位（${company} / ${industry} / ${region} / 年流水 ¥${revenue} 万）</h2>
+      <div class="summary">
+        <div class="score-box ${levelClass(userScores.total)}">
+          <div>您的健康度总分</div>
+          <div class="num">${userScores.total}</div>
+          <div class="level">${levelOf(userScores.total)}</div>
+          <div class="rank">在全国 1,547 家样本中排名：${ranking}</div>
+          <div class="rank">您 vs 行业平均：${(userScores.total/industryAvg.total).toFixed(2)} 倍 ｜ 您 vs ${region}：${(userScores.total/regionAvg.total).toFixed(2)} 倍</div>
+        </div>
+        <div class="radar-wrap">
+          <canvas id="radarCanvas" height="240"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- 屏 3：15 项对照 -->
+    <div class="card">
+      <h2>3. 15 项关键指标对照</h2>
+      <div style="overflow-x:auto">
+        <table class="compare">
+          <thead>
+            <tr>
+              <th>指标</th>
+              <th>您</th>
+              <th>${industry} 行业</th>
+              <th>${region} 地区</th>
+              <th>全国平均</th>
+              <th>健康线</th>
+              <th>等级</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${METRICS.map(m => {
+              const you = userMetrics[m.code];
+              const ind = m.base_industry[industry] ?? m.base_industry["综合钢贸"];
+              const reg = m.base_region[region] ?? m.base_region["全国"];
+              const nat = m.base_region["全国"];
+              const cls = indicatorClass(m, you);
+              const label = cls === "indicator-green" ? "✅ 健康" : cls === "indicator-yellow" ? "⚠️ 警示" : "🔴 红区";
+              const arrow = m.direction === "higher" ? "↑越高越好" : "↓越低越好";
+              const hl = `${m.healthy}${m.unit}（${arrow}）`;
+              return `<tr>
+                <td class="metric-name">${m.name}</td>
+                <td class="${cls}">${you}${m.unit}</td>
+                <td>${ind}${m.unit}</td>
+                <td>${reg}${m.unit}</td>
+                <td>${nat}${m.unit}</td>
+                <td>${hl}</td>
+                <td class="${cls}">${label}</td>
+              </tr>`;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+      <div class="source-note">绿 = 健康线之上 · 黄 = 警示区 · 红 = 危险区（必须优先处理）</div>
+    </div>
+
+    <!-- 屏 4：趋势 -->
+    <div class="card">
+      <h2>4. 4 季度健康度趋势</h2>
+      <canvas id="trendCanvas" height="220"></canvas>
+      <div class="source-note">您的轨迹（蓝） vs ${region} 平均（金） vs 行业平均（灰）· 含下季度 AI 预测</div>
+    </div>
+
+    <!-- 屏 5：红区 + 行动建议 -->
+    <div class="card">
+      <h2>5. 红区诊断 + 行动建议（按优先级）</h2>
+      ${redMetrics.length === 0
+        ? `<div class="hint">🎉 恭喜！您没有任何指标进入红区——继续保持，并向 A 级标杆迈进。</div>`
+        : `<div class="redzone-list">${redMetrics.slice(0,6).map(rm => {
+            const advice = ACTION_ADVICE[rm.metric.name] || {advice:"建议联系我们顾问 1 对 1 诊断。", product:""};
+            return `<div class="redzone">
+              <div class="title">🔴 ${rm.metric.name} = ${rm.val}${rm.metric.unit}（${rm.metric.direction === "higher" ? "低于" : "高于"}健康线）</div>
+              <div>${advice.advice}</div>
+              ${advice.product ? `<div style="color:#1F4E78;font-weight:600;margin-top:6px;">→ 推荐产品：${advice.product}</div>` : ""}
+            </div>`;
+          }).join("")}</div>`}
+    </div>
+
+    <!-- 屏 6：同行案例 -->
+    <div class="card">
+      <h2>6. 同行标杆案例（与您行业 / 模块匹配）</h2>
+      <div class="case-list">
+        ${cases.map(c => `<div class="case">
+          <div class="hero">${c.hero}（年流水 ¥${c.revenue} 亿 · ${c.industry}）</div>
+          <div><strong>改造前：</strong>${c.before}</div>
+          <div><strong>改造后（${c.timeline} 月）：</strong>${c.after}</div>
+          <div class="roi">投入 ¥${c.investment} 万 → 年收益 ¥${c.benefit} 万 / ROI ${(c.benefit/c.investment).toFixed(1)} 倍</div>
+          <div class="quote">"${c.quote}"</div>
+        </div>`).join("")}
+      </div>
+    </div>
+
+    <!-- 屏 7：下一步 -->
+    <div class="card" style="text-align:center; background: linear-gradient(135deg, #1F4E78 0%, #2f6cad 100%); color:#fff;">
+      <h2 style="color:#fff; border-left-color:#FFC000;">7. 下一步（3 选 1）</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:10px;">
+        <div style="background:rgba(255,255,255,.1);padding:14px;border-radius:8px;">
+          <div style="font-size:30px;">🩺</div>
+          <div style="font-weight:700;margin:6px 0;">30 题完整体检</div>
+          <div style="font-size:13px;opacity:.85;">5 分钟更精准 / 出 7 模块详细报告</div>
+        </div>
+        <div style="background:rgba(255,255,255,.1);padding:14px;border-radius:8px;">
+          <div style="font-size:30px;">🎁</div>
+          <div style="font-weight:700;margin:6px 0;">30 天免费试用</div>
+          <div style="font-size:13px;opacity:.85;">不签合同 / 不付款 / 工程师上门</div>
+        </div>
+        <div style="background:rgba(255,255,255,.1);padding:14px;border-radius:8px;">
+          <div style="font-size:30px;">🍷</div>
+          <div style="font-weight:700;margin:6px 0;">老板局参与</div>
+          <div style="font-size:13px;opacity:.85;">每月 1 场 / 5-15 个老板闭门</div>
+        </div>
+      </div>
+      <div style="margin-top:14px;font-size:13px;opacity:.9;">📞 400-XXX-XXXX · 💬 微信"钢联数字化顾问"</div>
+    </div>
+  `;
+
+  document.getElementById("result").innerHTML = html;
+  document.getElementById("btnShare").style.display = "inline-block";
+
+  // 渲染雷达图
+  const radarCtx = document.getElementById("radarCanvas").getContext("2d");
+  radarChart && radarChart.destroy();
+  radarChart = new Chart(radarCtx, {
+    type: "radar",
+    data: {
+      labels: ["M1 财务", "M2 客户", "M3 数字化", "M4 风控", "M5 增长", "M6 团队", "M7 战略"],
+      datasets: [
+        { label: "您", data: [userScores.M1,userScores.M2,userScores.M3,userScores.M4,userScores.M5,userScores.M6,userScores.M7], backgroundColor: "rgba(31,78,120,.25)", borderColor: "#1F4E78", borderWidth: 2, pointBackgroundColor: "#1F4E78" },
+        { label: region + " 平均", data: [regionAvg.M1,regionAvg.M2,regionAvg.M3,regionAvg.M4,regionAvg.M5,regionAvg.M6,regionAvg.M7], backgroundColor: "rgba(255,192,0,.18)", borderColor: "#FFC000", borderWidth: 2, pointBackgroundColor: "#FFC000" },
+        { label: industry + " 行业", data: [industryAvg.M1,industryAvg.M2,industryAvg.M3,industryAvg.M4,industryAvg.M5,industryAvg.M6,industryAvg.M7], backgroundColor: "rgba(160,160,160,.10)", borderColor: "#999", borderWidth: 1.5, pointBackgroundColor: "#999" },
+      ],
+    },
+    options: {
+      responsive: true,
+      scales: { r: { min: 0, max: 100, ticks: { stepSize: 20, font: { size: 10 } } } },
+      plugins: { legend: { position: "bottom", labels: { font: { size: 11 } } } },
+    },
+  });
+
+  // 渲染趋势图
+  const trendCtx = document.getElementById("trendCanvas").getContext("2d");
+  trendChart && trendChart.destroy();
+  // 模拟 4 季度历史
+  const yourTrend = [userScores.total - 5, userScores.total - 3, userScores.total - 1.5, userScores.total];
+  const regionTrend = [regionAvg.total - 2.5, regionAvg.total - 1.5, regionAvg.total - 0.5, regionAvg.total];
+  const indTrend = [industryAvg.total - 2, industryAvg.total - 1.2, industryAvg.total - 0.4, industryAvg.total];
+  const predict = userScores.total + 1.2;
+  trendChart = new Chart(trendCtx, {
+    type: "line",
+    data: {
+      labels: ["2025Q3","2025Q4","2026Q1","2026Q2","2026Q3(预测)"],
+      datasets: [
+        { label: "您", data: [...yourTrend, predict], borderColor: "#1F4E78", backgroundColor: "rgba(31,78,120,.1)", borderWidth: 2.5, tension: 0.3, pointRadius: 4 },
+        { label: region + " 平均", data: [...regionTrend, regionAvg.total + 0.8], borderColor: "#FFC000", borderWidth: 2, tension: 0.3, pointRadius: 3 },
+        { label: industry + " 行业", data: [...indTrend, industryAvg.total + 0.6], borderColor: "#999", borderWidth: 1.5, borderDash: [4,4], tension: 0.3, pointRadius: 3 },
+      ],
+    },
+    options: {
+      responsive: true,
+      scales: { y: { min: 40, max: 100 } },
+      plugins: { legend: { position: "bottom", labels: { font: { size: 11 } } } },
+    },
+  });
+
+  window.scrollTo({ top: document.querySelector(".card:nth-child(2)").offsetTop, behavior: "smooth" });
+}
+
+function resetAll() {
+  document.getElementById("company").value = "";
+  document.getElementById("revenue").value = 18000;
+  document.getElementById("industry").value = "综合钢贸";
+  document.getElementById("region").value = "京津冀";
+  document.getElementById("biz").value = "综合";
+  document.getElementById("founded").value = "";
+  document.getElementById("result").innerHTML = `<div class="card placeholder">👆 请在上方填入您的信息并点击"开始对照" 按钮，即可生成专属对照报告。</div>`;
+  document.getElementById("btnShare").style.display = "none";
+}
+
+function generatePoster() {
+  // 真实环境：调用 /api/v1/share/poster 生成 PNG
+  // 这里仅给出 alert 模拟
+  alert("📸 海报生成中... \n\n实际部署后，将自动生成专属海报（含您的等级 + 雷达图 + 行动建议 + 二维码），并可一键分享至微信 / 朋友圈。\n\n本地原型暂不渲染。");
+}
+
+document.getElementById("btnCompare").addEventListener("click", render);
+document.getElementById("btnReset").addEventListener("click", resetAll);
+document.getElementById("btnShare").addEventListener("click", generatePoster);
+
+// 自动跑一次（演示用）
+window.addEventListener("load", () => {
+  // 让首页保持引导态；如果想自动跑可取消下行注释
+  // render();
+});
+</script>
+</body>
+</html>
